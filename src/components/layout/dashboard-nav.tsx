@@ -9,7 +9,8 @@ import {
   Plus, 
   ClipboardList, 
   Search, 
-  Briefcase
+  Briefcase,
+  MessageSquare
 } from 'lucide-react'
 
 interface DashboardNavProps {
@@ -23,12 +24,14 @@ export function DashboardNav({ userRole }: DashboardNavProps) {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/tasks/new', label: 'Post Task', icon: Plus },
     { href: '/tasks', label: 'My Tasks', icon: ClipboardList },
+    { href: '/messages', label: 'Messages', icon: MessageSquare },
   ]
 
   const taskerLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/browse-tasks', label: 'Browse Tasks', icon: Search },
     { href: '/my-jobs', label: 'My Jobs', icon: Briefcase },
+    { href: '/messages', label: 'Messages', icon: MessageSquare },
   ]
 
   const bothRoleLinks = [
@@ -37,6 +40,7 @@ export function DashboardNav({ userRole }: DashboardNavProps) {
     { href: '/tasks', label: 'My Tasks', icon: ClipboardList },
     { href: '/browse-tasks', label: 'Browse Tasks', icon: Search },
     { href: '/my-jobs', label: 'My Jobs', icon: Briefcase },
+    { href: '/messages', label: 'Messages', icon: MessageSquare },
   ]
 
   const links = userRole === 'both' ? bothRoleLinks : 

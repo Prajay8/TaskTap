@@ -68,6 +68,20 @@ export function TaskApplicationsList({ applications, taskId }: TaskApplicationsL
 
       if (rejectError) throw rejectError
 
+      // Send application accepted notification email
+      try {
+        await fetch('/api/emails/application-accepted', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskId: taskId,
+            taskerId: taskerId
+          })
+        })
+      } catch (error) {
+        console.error('Failed to send acceptance email:', error)
+      }
+
       toast.success('Application accepted! Task has been assigned.')
       router.refresh()
     } catch (error) {

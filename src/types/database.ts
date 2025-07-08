@@ -101,3 +101,28 @@ export interface ApplicationWithDetails extends Application {
     price: number
   }
 }
+
+export interface Review {
+  id: string
+  task_id: string
+  reviewer_id: string
+  reviewed_id: string
+  rating: number
+  comment: string | null
+  is_visible: boolean
+  response: string | null
+  created_at: string
+}
+
+export interface UserRatingSummary {
+  user_id: string
+  full_name: string
+  role: UserRole
+  total_reviews: number
+  average_rating: number
+  five_star_count: number
+  four_star_count: number
+  three_star_count: number
+  two_star_count: number
+  one_star_count: number
+}

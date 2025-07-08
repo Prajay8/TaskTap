@@ -82,6 +82,24 @@ export default function SignUpPage() {
           console.error('Profile creation error:', profileError)
         }
 
+        // Send welcome email if user is created and has session
+        if (data.user && data.session) {
+          try {
+            await fetch('/api/emails/welcome', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                userId: data.user.id,
+                email: formData.email,
+                name: formData.fullName,
+                userType: formData.role
+              })
+            })
+          } catch (error) {
+            console.error('Failed to send welcome email:', error)
+          }
+        }
+
         toast.success('Account created successfully! Please check your email to verify your account.')
         
         if (data.session) {

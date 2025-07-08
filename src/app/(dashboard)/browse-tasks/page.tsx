@@ -12,6 +12,7 @@ import { MapPin, Clock, DollarSign, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { ApplyTaskModal } from '@/components/shared/apply-task-modal'
+import { RatingDisplay } from '@/components/shared/rating-display'
 
 interface Task {
   id: string
@@ -31,6 +32,10 @@ interface Task {
   customer: {
     full_name: string
     avatar_url: string | null
+  }
+  customer_rating?: {
+    average_rating: number
+    total_reviews: number
   }
 }
 
@@ -118,7 +123,22 @@ export default function BrowseTasksPage() {
       toast.error('Error loading tasks')
       console.error(error)
     } else {
-      setTasks(data || [])
+      // For each task, get the customer's rating
+      const tasksWithRatings = await Promise.all(
+        (data || []).map(async (task) => {
+          const { data: ratingData } = await supabase
+            .from('user_ratings_summary')
+            .select('average_rating, total_reviews')
+            .eq('user_id', task.customer_id)
+            .single()
+          
+          return {
+            ...task,
+            customer_rating: ratingData
+          }
+        })
+      )
+      setTasks(tasksWithRatings)
     }
     setLoading(false)
   }
@@ -244,9 +264,19 @@ export default function BrowseTasksPage() {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-between">
-                  <div className="text-sm text-gray-500">
-                    by {task.customer.full_name}
+                <CardFooter className="flex justify-between items-center">
+                  <div>
+                    <div className="text-sm text-gray-500">
+                      by {task.customer.full_name}
+                    </div>
+                    {task.customer_rating && task.customer_rating.total_reviews > 0 && (
+                      <RatingDisplay
+                        rating={task.customer_rating.average_rating}
+                        totalReviews={task.customer_rating.total_reviews}
+                        size="sm"
+                        className="mt-1"
+                      />
+                    )}
                   </div>
                   <div className="space-x-2">
                     <Link href={`/tasks/${task.id}`}>

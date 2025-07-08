@@ -85,6 +85,21 @@ export function ApplyTaskModal({ task, open, onOpenChange }: ApplyTaskModalProps
         return
       }
 
+      // Send task application notification email
+      try {
+        await fetch('/api/emails/task-application', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            taskId: task.id,
+            applicantId: user.id,
+            message: formData.message
+          })
+        })
+      } catch (error) {
+        console.error('Failed to send notification email:', error)
+      }
+
       toast.success('Application submitted successfully!')
       onOpenChange(false)
       router.refresh()
